@@ -216,12 +216,19 @@ function App() {
 
       setResult(data);
 
-      // Update graph - prioritize existing nodes, then use response nodes
+      // Update graph - ALWAYS keep existing nodes, only update edges
       setGraph(prevGraph => {
+        // Keep existing nodes if available, otherwise use response nodes
+        const existingNodes = prevGraph?.nodes && Object.keys(prevGraph.nodes).length > 0
+          ? prevGraph.nodes
+          : data.node_positions || {};
+
         const updatedGraph = {
           edges: data.graph_edges || prevGraph?.edges || [],
-          nodes: prevGraph?.nodes || data.node_positions || {}
+          nodes: existingNodes
         };
+
+        console.log("📝 Updated graph with", Object.keys(updatedGraph.nodes).length, "nodes and", updatedGraph.edges.length, "edges");
         return updatedGraph;
       });
     } catch (error) {
