@@ -99,7 +99,13 @@ function App() {
 
   const drawGraph = () => {
     const canvas = canvasRef.current;
-    if (!canvas || !graph) return;
+    if (!canvas || !graph || !graph.edges || !graph.nodes) {
+      if (!canvas) console.warn("⚠️ Canvas not ready");
+      if (!graph) console.warn("⚠️ Graph not loaded");
+      if (graph && !graph.edges) console.warn("⚠️ Graph edges missing:", graph);
+      if (graph && !graph.nodes) console.warn("⚠️ Graph nodes missing:", graph);
+      return;
+    }
 
     const ctx = canvas.getContext("2d");
     const width = canvas.width;
@@ -300,7 +306,7 @@ function App() {
   };
 
   const createAntsForIteration = (iterationData) => {
-    if (!iterationData || !iterationData.paths || !graph) return [];
+    if (!iterationData || !iterationData.paths || !graph || !graph.nodes) return [];
 
     const newAnts = [];
     iterationData.paths.forEach((pathData, idx) => {
@@ -325,6 +331,8 @@ function App() {
   };
 
   const updateAnts = () => {
+    if (!graph || !graph.nodes) return;
+
     setAnts(prevAnts => {
       const updatedAnts = prevAnts.map(ant => {
         if (ant.currentNodeIndex >= ant.path.length - 1) {
@@ -335,6 +343,8 @@ function App() {
         const nextNode = ant.path[ant.currentNodeIndex + 1];
         const currentPos = graph.nodes[currentNode];
         const nextPos = graph.nodes[nextNode];
+
+        if (!currentPos || !nextPos) return null;
 
         ant.progress += ant.speed;
 
@@ -386,16 +396,26 @@ function App() {
         end,
         blocked_edges: blockedEdges
       });
+
+      console.log("✅ Response received:", response.data);
+      console.log("📊 Graph edges:", response.data.graph_edges);
+      console.log("📍 Node positions:", response.data.node_positions);
+
       setResult(response.data);
 
       // Keep existing nodes with x/y, only update edges
-      setGraph(prevGraph => ({
-        edges: response.data.graph_edges,
-        nodes: prevGraph?.nodes || response.data.node_positions
-      }));
+      setGraph(prevGraph => {
+        const newGraph = {
+          edges: response.data.graph_edges || [],
+          nodes: prevGraph?.nodes || response.data.node_positions || {}
+        };
+        console.log("🔄 Updated graph:", newGraph);
+        return newGraph;
+      });
     } catch (error) {
-      console.error("Error optimizing:", error);
-      alert("Error finding optimal path. Please check your inputs.");
+      console.error("❌ Error optimizing:", error);
+      console.error("❌ Error response:", error.response?.data);
+      alert(`Error finding optimal path: ${error.response?.data?.error || error.message}`);
     } finally {
       setLoading(false);
     }
