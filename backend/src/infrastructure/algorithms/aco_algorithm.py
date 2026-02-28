@@ -46,8 +46,10 @@ class AntColonyOptimization(IPathFinderAlgorithm):
 
         # Block edges if specified
         if blocked_edges:
+            print(f"🚫 Blocking {len(blocked_edges)} edges: {blocked_edges}")
             for from_node, to_node in blocked_edges:
                 graph.block_edge(from_node, to_node)
+                print(f"   ✓ Blocked: {from_node} ↔ {to_node}")
 
         # Initialize pheromone
         self._initialize_pheromone(graph)
@@ -76,11 +78,13 @@ class AntColonyOptimization(IPathFinderAlgorithm):
         return Path(nodes=best_path, distance=best_distance)
 
     def _initialize_pheromone(self, graph: Graph) -> None:
-        """Initialize pheromone levels on all edges"""
+        """Initialize pheromone levels on all edges (bidirectional)"""
         self.pheromone = {}
         for edge in graph.edges:
             if not edge.is_blocked:
-                self.pheromone[edge.as_tuple()] = 1.0
+                # Add pheromone for both directions (undirected graph)
+                self.pheromone[(edge.from_node, edge.to_node)] = 1.0
+                self.pheromone[(edge.to_node, edge.from_node)] = 1.0
 
     def _construct_path(
         self,

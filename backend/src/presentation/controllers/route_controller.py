@@ -77,10 +77,12 @@ class RouteController:
             # Get graph for response
             graph_data = self._get_graph_use_case.execute()
 
-            # Build response
+            # Build response with safe defaults
             response_data = result.to_dict()
-            response_data["graph_edges"] = graph_data["edges"]
-            response_data["node_positions"] = graph_data["nodes"]
+            response_data["graph_edges"] = graph_data.get("edges", [])
+            response_data["node_positions"] = graph_data.get("nodes", {})
+
+            print(f"✅ Response data: graph_edges count = {len(response_data['graph_edges'])}, nodes count = {len(response_data['node_positions'])}")
 
             return jsonify(response_data), 200
 

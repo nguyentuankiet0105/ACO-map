@@ -26,16 +26,22 @@ class Graph:
         self.edges.append(edge)
 
     def get_neighbors(self, node_id: str) -> List[str]:
-        """Get all neighboring nodes"""
-        return [
-            edge.to_node for edge in self.edges
-            if edge.from_node == node_id and not edge.is_blocked
-        ]
+        """Get all neighboring nodes (undirected graph)"""
+        neighbors = []
+        for edge in self.edges:
+            if edge.is_blocked:
+                continue
+            if edge.from_node == node_id:
+                neighbors.append(edge.to_node)
+            elif edge.to_node == node_id:
+                neighbors.append(edge.from_node)
+        return neighbors
 
     def get_edge_weight(self, from_node: str, to_node: str) -> float:
-        """Get weight of edge between two nodes"""
+        """Get weight of edge between two nodes (undirected graph)"""
         for edge in self.edges:
-            if edge.from_node == from_node and edge.to_node == to_node:
+            if ((edge.from_node == from_node and edge.to_node == to_node) or
+                (edge.from_node == to_node and edge.to_node == from_node)):
                 return edge.weight
         raise ValueError(f"Edge from {from_node} to {to_node} not found")
 

@@ -177,51 +177,147 @@ Rendering:
 BACKEND SETUP
 =====================================
 
-1. Navigate to backend folder
+**Lưu ý quan trọng:**
+- Project này sử dụng Python 3.9+
+- Trên Mac: dùng lệnh `python3` thay vì `python`
+- Trên Windows: dùng lệnh `python` (nếu đã cài Python 3)
+- Virtual environment nằm ở thư mục gốc: `.venv`
 
+---
+
+**Bước 1: Di chuyển đến thư mục gốc project**
+
+```bash
+cd ACO_Decision_Support_System
+```
+
+---
+
+**Bước 2: Tạo virtual environment (chỉ làm lần đầu)**
+
+**Mac/Linux:**
+```bash
+python3 -m venv .venv
+```
+
+**Windows:**
+```bash
+python -m venv .venv
+```
+
+---
+
+**Bước 3: Kích hoạt virtual environment**
+
+**Mac/Linux:**
+```bash
+source .venv/bin/activate
+```
+
+**Windows (Command Prompt):**
+```bash
+.venv\Scripts\activate.bat
+```
+
+**Windows (PowerShell):**
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+Sau khi kích hoạt, bạn sẽ thấy `(.venv)` ở đầu dòng lệnh.
+
+---
+
+**Bước 4: Di chuyển vào thư mục backend**
+
+```bash
 cd backend
+```
 
-2. Create virtual environment
+---
 
-python -m venv venv
+**Bước 5: Cài đặt dependencies (chỉ làm lần đầu)**
 
-Mac/Linux:
-source venv/bin/activate
-
-Windows:
-venv\Scripts\activate
-
-3. Install dependencies
-
+```bash
 pip install -r requirements.txt
+```
 
-4. Run server
+---
 
+**Bước 6: Chạy backend server**
+
+**Cách 1: File app.py đơn giản (Recommended)**
+
+**Mac/Linux:**
+```bash
+python3 app.py
+```
+
+**Windows:**
+```bash
 python app.py
+```
 
-Server runs at:
+**Cách 2: Clean Architecture (src/app.py)**
+
+Từ thư mục backend, chạy:
+
+**Mac/Linux:**
+```bash
+python3 -c "from src.app import create_app; app = create_app(); app.run(debug=True, host='0.0.0.0', port=5000)"
+```
+
+**Windows:**
+```bash
+python -c "from src.app import create_app; app = create_app(); app.run(debug=True, host='0.0.0.0', port=5000)"
+```
+
+**Server chạy tại:**
+```
 http://localhost:5000
+```
+
+**Kiểm tra server:**
+```bash
+curl http://localhost:5000/graph
+```
+
+---
 
 =====================================
 FRONTEND SETUP
 =====================================
 
-Open new terminal
+**Mở terminal mới** (giữ backend đang chạy)
 
-1. Navigate to frontend folder
+**Bước 1: Di chuyển vào thư mục frontend**
 
+```bash
 cd frontend
+```
 
-2. Install dependencies
+---
 
+**Bước 2: Cài đặt dependencies (chỉ làm lần đầu)**
+
+```bash
 npm install
+```
 
-3. Run development server
+---
 
+**Bước 3: Chạy development server**
+
+```bash
 npm start
+```
 
-Frontend runs at:
+**Frontend chạy tại:**
+```
 http://localhost:3000
+```
+
+Browser sẽ tự động mở.
 
 ---
 
